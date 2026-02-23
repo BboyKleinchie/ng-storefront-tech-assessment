@@ -1,9 +1,11 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, DestroyRef, inject, input, output, signal, TemplateRef, ViewChild } from '@angular/core';
+import { Component, inject, input, OnDestroy, output, signal, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap/modal';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, takeUntil } from 'rxjs';
+
+import { Unsubscriber } from '../../../abstract/unsubscriber';
 
 import { FormFieldComponent } from '../../form-field/form-field';
 import { LoadingButtonComponent } from '../../loading-button/loading-button';
@@ -33,7 +35,7 @@ import { isNumberNullOrZero } from '../../../utils/isEmptyChecks.utils';
   templateUrl: './registration-modal.html',
   styleUrl: './registration-modal.scss',
 })
-export class RegistrationModalComponent {
+export class RegistrationModalComponent extends Unsubscriber implements OnDestroy {
   showModal = input.required<boolean>();
   dismiss = output<void>();
   loginClick = output<void>();
@@ -47,12 +49,13 @@ export class RegistrationModalComponent {
 
   private modalRef?: NgbModalRef;
 
-  private destroyRef = inject(DestroyRef);
   private formBuilder = inject(FormBuilder);
   private store = inject(Store<UsersStore>);
   private toastService = inject(ToastService);
 
   constructor() {
+    super();
+
     this.registrationForm = this.createRegistrationForm();
     this.isLoading$ = this.store.select(selectUsersIsLoading);
   }
@@ -84,22 +87,16 @@ export class RegistrationModalComponent {
 
     this.store.dispatch(registerUser({request}));
 
-    const subscription = (
-      this.store
-          .select(selectNewUserId)
-          .subscribe((userId) => {
-            if (isNumberNullOrZero(userId ?? 0)) return;
+    this.store
+        .select(selectNewUserId)
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe((userId) => {
+          if (isNumberNullOrZero(userId ?? 0)) return;
 
-            this.toastService.show({ template: this.toastSuccessTemplate, classname: 'bg-success text-light', delay: 5000 });
-            this.onDismiss();
-            this.modalRef?.close();
-            subscription?.unsubscribe();
-          })
-    );
-
-    this.destroyRef.onDestroy(() => {
-      subscription?.unsubscribe();
-    })
+          this.toastService.show({ template: this.toastSuccessTemplate, classname: 'bg-success text-light', delay: 5000 });
+          this.onDismiss();
+          this.modalRef?.close();
+        });
   }
 
   private createRegistrationForm(): FormGroup {

@@ -1,6 +1,6 @@
-import { Component, inject, DestroyRef, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, OnDestroy } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
-import { combineLatest, map, Observable } from 'rxjs';
+import { combineLatest, map, Observable, takeUntil } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { get } from 'lodash-es';
 
@@ -19,6 +19,7 @@ import { getProducts } from '../../store/actions/products.actions';
 
 import { isArrayNullOrEmpty, isCollectionNullOrEmpty, isStringNullOrEmpty } from '../../utils/isEmptyChecks.utils';
 import { parseJWT } from '../../utils/security.utils';
+import { Unsubscriber } from '../../abstract/unsubscriber';
 
 @Component({
   selector: 'storefront-cart',
@@ -31,7 +32,7 @@ import { parseJWT } from '../../utils/security.utils';
   templateUrl: './cart.html',
   styleUrl: './cart.scss',
 })
-export class CartPage {
+export class CartPage extends Unsubscriber implements OnDestroy {
   isLoading$: Observable<boolean>;
 
   hasCartProducts = computed(() => !isArrayNullOrEmpty(this.cart()?.products??[]));
@@ -41,75 +42,73 @@ export class CartPage {
   private userId = signal<number | null>(null);
 
   private store = inject(Store);
-  private destroyRef = inject(DestroyRef);
 
   constructor() {
+    super();
+
     this.isLoading$ = combineLatest([
                         this.store.select(selectAuthIsLoading),
                         this.store.select(selectCartIsLoading),
                         this.store.select(selectProductsIsLoading)
                       ])
                       .pipe(
+                        takeUntil(this.destroyed$),
                         map(([authIsLoading, cartIsLoading, productsIsLoading]) =>
                           authIsLoading || cartIsLoading || productsIsLoading
                         )
                       );
 
-    const authSubscription = (
-      this.store
-          .select(selectAuthToken)
-          .subscribe((token) => {
-            if(isStringNullOrEmpty(token ?? '')) return;
+    this.store
+        .select(selectAuthToken)
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe((token) => {
+          if(isStringNullOrEmpty(token ?? '')) return;
 
-            const userDetails = parseJWT(token!);
-            const userId: number = get(userDetails, 'sub', -1);
+          const userDetails = parseJWT(token!);
+          const userId: number = get(userDetails, 'sub', -1);
 
-            if(userId === -1) return;
+          if(userId === -1) return;
 
-            this.userId.set(userId);
+          this.userId.set(userId);
 
-            this.store
-                .select(selectCarts)
-                .subscribe((carts) => {
-                  const cart = carts.find(c => c.userId === userId);
-                  if (isCollectionNullOrEmpty(cart)) return;
+          this.store
+              .select(selectCarts)
+              .pipe(takeUntil(this.destroyed$))
+              .subscribe((carts) => {
+                const cart = carts.find(c => c.userId === userId);
+                if (isCollectionNullOrEmpty(cart)) return;
 
-                  this.store.dispatch(getCart({cartId: cart!.id}));
-                })
-          })
-    );
-    const cartSubscription = (
-      this.store
-          .select(selectCart)
-          .subscribe((cart) => {
-            this.cart.set(cart ?? null);
+                this.store.dispatch(getCart({cartId: cart!.id}));
+              })
+        });
 
-            if (isCollectionNullOrEmpty(cart)) return;
+    this.store
+        .select(selectCart)
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe((cart) => {
+          this.cart.set(cart ?? null);
 
-            this.store
-                .select(selectProducts)
-                .subscribe((products) => {
-                  if (isArrayNullOrEmpty(products)) {
-                    this.store.dispatch(getProducts());
-                    return;
-                  }
+          if (isCollectionNullOrEmpty(cart)) return;
 
-                  const cartProductIds = this.cart()?.products.map(p => p.productId)??[];
-                  this.products.set(
-                    [
-                      ...products.filter((product) => {
-                        return cartProductIds.includes(product.id);
-                      })
-                    ]
-                  );
+          this.store
+              .select(selectProducts)
+              .pipe(takeUntil(this.destroyed$))
+              .subscribe((products) => {
+                if (isArrayNullOrEmpty(products)) {
+                  this.store.dispatch(getProducts());
+                  return;
+                }
 
-                })
-          })
-    );
+                const cartProductIds = this.cart()?.products.map(p => p.productId)??[];
+                this.products.set(
+                  [
+                    ...products.filter((product) => {
+                      return cartProductIds.includes(product.id);
+                    })
+                  ]
+                );
 
-    this.destroyRef.onDestroy(() => {
-      authSubscription?.unsubscribe();
-      cartSubscription?.unsubscribe();
-    });
+              })
+        });
   }
 }

@@ -1,6 +1,8 @@
-import { Component, computed, DestroyRef, inject, output, signal } from '@angular/core';
+import { Component, computed, inject, OnDestroy, output, signal } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { takeUntil } from 'rxjs';
 
+import { Unsubscriber } from '../../../abstract/unsubscriber';
 import { ErrorsStore } from './../../../store/models/errors.store.model';
 
 import { ModalComponent } from '../modal';
@@ -18,21 +20,18 @@ import { isStringNullOrEmpty } from '../../../utils/isEmptyChecks.utils';
   templateUrl: './error-modal.html',
   styleUrl: './error-modal.scss',
 })
-export class ErrorModalComponent {
+export class ErrorModalComponent extends Unsubscriber implements OnDestroy {
   dismiss = output<void>();
 
   errorMessage = signal<string>('');
   hasErrorMessage = computed(() => !isStringNullOrEmpty(this.errorMessage()));
 
-  private destroyRef = inject(DestroyRef);
-
   constructor(store: Store<ErrorsStore>) {
-    const subscription = store.select(selectErrors)
-                              .subscribe((errorMessage) => {
-                                this.errorMessage.set(errorMessage ?? '')
-                              });
+    super();
 
-    this.destroyRef.onDestroy(() => { subscription.unsubscribe(); });
+    store.select(selectErrors)
+         .pipe(takeUntil(this.destroyed$))
+         .subscribe((errorMessage) => this.errorMessage.set(errorMessage ?? ''));
   }
 
 }

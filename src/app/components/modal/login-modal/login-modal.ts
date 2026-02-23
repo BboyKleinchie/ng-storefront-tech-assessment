@@ -1,9 +1,11 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, DestroyRef, inject, input, output, signal, TemplateRef, ViewChild } from '@angular/core';
+import { Component, inject, input, OnDestroy, output, signal, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap/modal';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, takeUntil } from 'rxjs';
+
+import { Unsubscriber } from '../../../abstract/unsubscriber';
 
 import { FormFieldComponent } from '../../form-field/form-field';
 import { LoadingButtonComponent } from "../../loading-button/loading-button";
@@ -33,7 +35,7 @@ import { isStringNullOrEmpty } from './../../../utils/isEmptyChecks.utils';
   templateUrl: './login-modal.html',
   styleUrl: './login-modal.scss',
 })
-export class LoginModalComponent {
+export class LoginModalComponent extends Unsubscriber implements OnDestroy {
   showModal = input.required<boolean>();
   dismiss = output<void>();
   registrationClick = output<void>();
@@ -47,12 +49,13 @@ export class LoginModalComponent {
 
   private modalRef?: NgbModalRef;
 
-  private destroyRef = inject(DestroyRef);
   private formBuilder = inject(FormBuilder);
   private store = inject(Store<AuthStore>);
   private toastService = inject(ToastService);
 
   constructor() {
+    super();
+
     this.loginForm = this.createLoginForm();
     this.isLoading$ = this.store.select(selectAuthIsLoading);
   }
@@ -75,22 +78,16 @@ export class LoginModalComponent {
 
     this.store.dispatch(authenticateUser({request}));
 
-    const tokenSubscription = (
-      this.store
-          .select(selectAuthToken)
-          .subscribe((token) => {
-            if (isStringNullOrEmpty(token ?? '')) return;
+    this.store
+        .select(selectAuthToken)
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe((token) => {
+          if (isStringNullOrEmpty(token ?? '')) return;
 
-            this.showSuccessToast();
-            this.onDismiss();
-            this.modalRef?.close();
-            tokenSubscription?.unsubscribe();
-          })
-    );
-
-    this.destroyRef.onDestroy(() => {
-      tokenSubscription?.unsubscribe();
-    })
+          this.showSuccessToast();
+          this.onDismiss();
+          this.modalRef?.close();
+        });
   }
 
   onRegister() {

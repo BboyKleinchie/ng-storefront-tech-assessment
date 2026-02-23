@@ -1,6 +1,9 @@
-import { Component, inject, signal, DestroyRef, ViewChild, TemplateRef } from '@angular/core';
+import { Component, inject, signal, ViewChild, TemplateRef, OnDestroy } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { takeUntil } from 'rxjs';
+
+import { Unsubscriber } from '../../abstract/unsubscriber';
 
 import { LinkListComponent } from '../link-list/link-list';
 import { LoginModalComponent } from '../modal/login-modal/login-modal';
@@ -26,7 +29,7 @@ import { isStringNullOrEmpty } from '../../utils/isEmptyChecks.utils';
   templateUrl: './header.html',
   styleUrl: './header.scss'
 })
-export class HeaderComponent {
+export class HeaderComponent extends Unsubscriber implements OnDestroy {
   showLoginModal = signal<boolean>(false);
   showRegistrationModal = signal<boolean>(false);
   isLoggedIn = signal<boolean>(false);
@@ -35,25 +38,23 @@ export class HeaderComponent {
   private toastSuccessTemplate!: TemplateRef<any>;
 
   private store = inject(Store<AuthStore>);
-  private destroyRef = inject(DestroyRef);
   private toastService = inject(ToastService);
   private router = inject(Router);
 
   constructor() {
-    const subscription = this.store
-                             .select(selectAuthToken)
-                             .subscribe((token) => {
-                              if (isStringNullOrEmpty(token ?? '')) {
-                                this.isLoggedIn.set(false);
-                                return
-                              };
+    super();
 
-                              this.isLoggedIn.set(true);
-                             });
+    this.store
+        .select(selectAuthToken)
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe((token) => {
+          if (isStringNullOrEmpty(token ?? '')) {
+            this.isLoggedIn.set(false);
+            return
+          };
 
-    this.destroyRef.onDestroy(() => {
-      subscription.unsubscribe();
-    })
+          this.isLoggedIn.set(true);
+        });
   }
 
   onLogin() { this.showLoginModal.set(true); }

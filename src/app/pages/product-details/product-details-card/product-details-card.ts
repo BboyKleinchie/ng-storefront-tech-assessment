@@ -1,10 +1,10 @@
-import { Component, computed, inject, input, signal, DestroyRef } from '@angular/core';
+import { Component, computed, inject, input, OnDestroy, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { AsyncPipe, CurrencyPipe } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { get } from 'lodash-es';
 import { combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 
 import { CardComponent } from '../../../components/card/card';
 import { InfoModalComponent } from '../../../components/modal/info-modal/info-modal';
@@ -23,6 +23,7 @@ import { selectCartAdded, selectCartIsLoading, selectCarts, selectCartUpdated } 
 import { NewCartRequest } from '../../../models/requests/new-cart.request.model';
 import { addCart, clearAddedCart, clearUpdatedCart, updateCart } from '../../../store/actions/cart.actions';
 import { selectUsersIsLoading } from '../../../store/selectors/users.selectors';
+import { Unsubscriber } from '../../../abstract/unsubscriber';
 
 @Component({
   selector: 'storefront-product-details-card',
@@ -38,7 +39,7 @@ import { selectUsersIsLoading } from '../../../store/selectors/users.selectors';
   templateUrl: './product-details-card.html',
   styleUrl: './product-details-card.scss'
 })
-export class ProductDetailsCardComponent {
+export class ProductDetailsCardComponent extends Unsubscriber implements OnDestroy {
   productDetails = input.required<Product | null>();
 
   hasProductDetails = computed(() => !isCollectionNullOrEmpty(this.productDetails()));
@@ -53,71 +54,67 @@ export class ProductDetailsCardComponent {
 
   private router = inject(Router);
   private store = inject(Store);
-  private destroyRef = inject(DestroyRef);
 
   constructor() {
+    super();
+
     this.isLoading$ = combineLatest([
                         this.store.select(selectUsersIsLoading),
                         this.store.select(selectAuthIsLoading),
                         this.store.select(selectCartIsLoading),
                       ])
                       .pipe(
+                        takeUntil(this.destroyed$),
                         map(([usersIsLoading, authIsLoading, cartIsLoading]) =>
                           usersIsLoading || authIsLoading || cartIsLoading
                         )
                       );
 
-    const authSubscription = (
-      this.store
-          .select(selectAuthToken)
-          .subscribe((token) => {
-            this.authToken = token;
-            if(isStringNullOrEmpty(token ?? '')) return;
+    this.store
+        .select(selectAuthToken)
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe((token) => {
+          this.authToken = token;
+          if(isStringNullOrEmpty(token ?? '')) return;
 
-            const userDetails = parseJWT(token!);
-            const userId: number = get(userDetails, 'sub', -1);
+          const userDetails = parseJWT(token!);
+          const userId: number = get(userDetails, 'sub', -1);
 
-            if(userId === -1) return;
+          if(userId === -1) return;
 
-            this.store.dispatch(getUser({userId}));
-            this.userId.set(userId);
+          this.store.dispatch(getUser({userId}));
+          this.userId.set(userId);
 
-            this.store
-                .select(selectCarts)
-                .subscribe((carts) => {
-                  const cart = carts.find(c => c.userId === userId);
-                  if (isCollectionNullOrEmpty(cart)) return;
+          this.store
+              .select(selectCarts)
+              .pipe(takeUntil(this.destroyed$))
+              .subscribe((carts) => {
+                const cart = carts.find(c => c.userId === userId);
+                if (isCollectionNullOrEmpty(cart)) return;
 
-                  this.cart.set(cart ?? null);
-                })
-          })
-    );
-    const cartAddedSubscription = (
-      this.store
-          .select(selectCartAdded)
-          .subscribe((cart) => {
-            if (isCollectionNullOrEmpty(cart)) return;
+                this.cart.set(cart ?? null);
+              })
+        });
 
-            this.store.dispatch(clearAddedCart());
-            this.router.navigate(['cart']);
-          })
-    );
-    const cartUpdatedSubscription = (
-      this.store
-          .select(selectCartUpdated)
-          .subscribe((cart) => {
-            if (isCollectionNullOrEmpty(cart)) return;
+    this.store
+        .select(selectCartAdded)
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe((cart) => {
+          if (isCollectionNullOrEmpty(cart)) return;
 
-            this.store.dispatch(clearUpdatedCart());
-            this.router.navigate(['cart']);
-          })
-    );
+          this.store.dispatch(clearAddedCart());
+          this.router.navigate(['cart']);
+        });
 
-    this.destroyRef.onDestroy(() => {
-      authSubscription?.unsubscribe();
-      cartAddedSubscription?.unsubscribe();
-      cartUpdatedSubscription?.unsubscribe();
-    });
+    this.store
+        .select(selectCartUpdated)
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe((cart) => {
+          if (isCollectionNullOrEmpty(cart)) return;
+
+          this.store.dispatch(clearUpdatedCart());
+          this.router.navigate(['cart']);
+        });
   }
 
   addProductToCart() {
