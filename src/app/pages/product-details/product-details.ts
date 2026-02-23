@@ -1,8 +1,10 @@
-import { Component, computed, inject, input, signal, DestroyRef, OnInit } from '@angular/core';
+import { Component, computed, inject, input, signal, OnInit, OnDestroy } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, takeUntil } from 'rxjs';
+
+import { Unsubscriber } from '../../abstract/unsubscriber';
 
 import { LoadingSpinnerComponent } from '../../components/loading-spinner/loading-spinner';
 import { NoProductsCardComponent } from '../products/no-products-card/no-products-card';
@@ -26,7 +28,7 @@ import { isCollectionNullOrEmpty } from '../../utils/isEmptyChecks.utils';
   templateUrl: './product-details.html',
   styleUrl: './product-details.scss',
 })
-export class ProductDetailsPage implements OnInit {
+export class ProductDetailsPage extends Unsubscriber implements OnInit, OnDestroy {
   productId = input.required<number>();
 
   isLoading$: Observable<boolean>;
@@ -35,15 +37,16 @@ export class ProductDetailsPage implements OnInit {
   hasProductDetails = computed(() => !(isCollectionNullOrEmpty(this.productDetails())) );
 
   private store = inject(Store<ProductsStore>);
-  private destroyRef = inject(DestroyRef);
   private router = inject(Router);
 
   constructor() {
+    super();
+
     this.isLoading$ = this.store.select(selectProductsIsLoading);
 
-    const subscription = (
-      this.store
+    this.store
         .select(selectProductDetails)
+        .pipe(takeUntil(this.destroyed$))
         .subscribe((productDetails) => {
           if (isCollectionNullOrEmpty(productDetails)) {
             this.productDetails.set(null);
@@ -51,10 +54,7 @@ export class ProductDetailsPage implements OnInit {
           }
 
           this.productDetails.set(productDetails);
-        })
-    );
-
-    this.destroyRef.onDestroy(() => subscription?.unsubscribe());
+        });
 
   }
 
