@@ -1,0 +1,12 @@
+.rating {
+  display: flex;
+  align-items: center;
+  column-gap: 0.4rem;
+  transform: translateX(-2%);
+}
+
+:host(.no-transform) > .rating { transform: none; }
+
+.rating > span {
+  font-size: 1.2rem;
+}

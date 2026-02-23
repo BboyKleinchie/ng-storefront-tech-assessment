@@ -1,0 +1,44 @@
+.material-icons,
+.material-symbols-outlined {
+  display: inline-block;
+  color: var(--icon-colour);
+  font-size: var(--icon-size);
+
+  transition: color .1s ease-in;
+}
+
+.material-icons,
+.material-symbols-outlined,
+:host(.xs) > .material-icons,
+:host(.xs) > .material-symbols-outlined { --icon-size: 1.6rem; }
+
+:host(.sm) > .material-icons,
+:host(.sm) > .material-symbols-outlined { --icon-size: 1.8rem; }
+:host(.md) > .material-icons,
+:host(.md) > .material-symbols-outlined { --icon-size: 2.4rem; }
+:host(.lg) > .material-icons,
+:host(.lg) > .material-symbols-outlined { --icon-size: 3.6rem; }
+:host(.xl) > .material-icons,
+:host(.xl) > .material-symbols-outlined { --icon-size: 4.8rem; }
+:host(.xxl) > .material-icons,
+:host(.xxl) > .material-symbols-outlined { --icon-size: 6rem; }
+:host(.xxxl) > .material-icons,
+:host(.xxxl) > .material-symbols-outlined { --icon-size: 7rem; }
+
+.material-icons,
+.material-symbols-outlined,
+:host(.primary) > .material-icons,
+:host(.primary) > .material-symbols-outlined { --icon-colour: var(--colour-primary); }
+:host(.secondary) > .material-icons,
+:host(.secondary) > .material-symbols-outlined { --icon-colour: var(--colour-secondary); }
+:host(.danger) > .material-icons,
+:host(.danger) > .material-symbols-outlined { --icon-colour: var(--danger); }
+:host(.white) > .material-icons,
+:host(.white) > .material-symbols-outlined { --icon-colour: var(--white); }
+
+:host(.hover) > .material-icons:hover,
+:host(.hover) > .material-symbols-outlined,
+:host(.primary.hover) > .material-icons:hover,
+:host(.primary.hover) > .material-symbols-outlined { --icon-colour: var(--colour-secondary); }
+:host(.secondary.hover) > .material-icons:hover,
+:host(.secondary.hover) > .material-symbols-outlined { --icon-colour: var(--colour-primary); }

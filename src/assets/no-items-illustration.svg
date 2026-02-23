@@ -1,0 +1,60 @@
+<svg
+  width="220"
+  height="180"
+  viewBox="0 0 220 180"
+  role="img"
+  aria-label="Empty shopping cart"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <!-- Cart body -->
+  <path
+    d="M40 50h120l-10 60H60z"
+    fill="#DFEBF6"
+    stroke="#44576D"
+    stroke-width="3"
+    stroke-linejoin="round"
+  />
+
+  <!-- Cart handle -->
+  <path
+    d="M40 50l-10-20"
+    fill="none"
+    stroke="#44576D"
+    stroke-width="3"
+    stroke-linecap="round"
+  />
+
+  <!-- Wheels -->
+  <circle cx="70" cy="125" r="8" fill="#768A96"/>
+  <circle cx="130" cy="125" r="8" fill="#768A96"/>
+
+  <!-- Empty indicator lines -->
+  <line
+    x1="80"
+    y1="75"
+    x2="120"
+    y2="95"
+    stroke="#AAC7D8"
+    stroke-width="3"
+    stroke-linecap="round"
+  />
+  <line
+    x1="120"
+    y1="75"
+    x2="80"
+    y2="95"
+    stroke="#AAC7D8"
+    stroke-width="3"
+    stroke-linecap="round"
+  />
+
+  <!-- Soft shadow -->
+  <ellipse
+    cx="100"
+    cy="140"
+    rx="55"
+    ry="8"
+    fill="#E6E6E6"
+    opacity="0.6"
+  />
+</svg>

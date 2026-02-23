@@ -1,0 +1,38 @@
+<storefront-modal
+  title="Register"
+  [showModal]="showModal()"
+  [shouldShowFooter]="true"
+  [shouldShowDismissAction]="false"
+  (dismiss)="onDismiss()"
+  (modalRef)="storeModalReference($event)">
+  <form
+    class="registration-modal"
+    [formGroup]="registrationForm"
+    (ngSubmit)="onRegister($event)">
+    <storefront-form-field [form]="registrationForm" fieldName="email">
+      <input class="storefront-input" placeholder="Email" formControlName="email"/>
+    </storefront-form-field>
+    <storefront-form-field [form]="registrationForm" fieldName="username">
+      <input class="storefront-input" placeholder="Username" formControlName="username"/>
+    </storefront-form-field>
+
+    <storefront-form-field [form]="registrationForm" fieldName="password">
+      <storefront-password-input (visibilityChange)="isPasswordVisible.set($event)">
+        <input
+          class="storefront-input"
+          placeholder="Password"
+          [type]="`${isPasswordVisible()?'text':'password'}`"
+          formControlName="password" />
+      </storefront-password-input>
+    </storefront-form-field>
+
+    <storefront-loading-button [isLoading]="isLoading$ | async">
+      <button class="button primary" type="submit">Continue</button>
+    </storefront-loading-button>
+  </form>
+  <div class="modal-footer-content">
+    <p>Already have a user? <button class="flat-button primary" (click)="onLogin()">Login</button></p>
+  </div>
+</storefront-modal>
+
+<ng-template #toastSuccess>Registered a new user successfully</ng-template>

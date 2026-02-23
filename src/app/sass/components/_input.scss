@@ -1,0 +1,27 @@
+input.storefront-input {
+  padding: 0.6rem 4rem 0.6rem 1.4rem;
+  border-radius: 4px;
+
+  font-size: 1.4rem;
+}
+
+input.storefront-input,
+input.storefront-input.primary,
+input.storefront-input:active,
+input.storefront-input.primary:active,
+input.storefront-input:focus,
+input.storefront-input.primary:focus,
+input.storefront-input:focus-visible,
+input.storefront-input.primary:focus-visible {
+  border: 1px solid var(--colour-primary);
+  color: var(--colour-primary);
+}
+
+input.storefront-input:active,
+input.storefront-input.primary:active,
+input.storefront-input:focus,
+input.storefront-input.primary:focus,
+input.storefront-input:focus-visible,
+input.storefront-input.primary:focus-visible {
+  outline: 1px solid var(--colour-primary);
+}

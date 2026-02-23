@@ -1,0 +1,16 @@
+.number-picker {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: .6rem;
+}
+
+.number-picker__input {
+  padding: .4rem 1rem;
+  width: 4rem;
+  font-size: 1.4rem;
+  color: var(--colour-secondary);
+  border: 1px solid var(--colour-primary);
+  border-radius: 4px;
+  user-select: none;
+}

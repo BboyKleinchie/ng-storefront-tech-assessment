@@ -1,0 +1,9 @@
+<storefront-modal (dismiss)="dismiss.emit()" [showModal]="showModal()" [shouldShowDismissAction]="true">
+  <form class="info-modal">
+    <div class="info-modal__banner">
+      <storefront-material-icon name="info" class="xxxl white"/>
+    </div>
+    <h3 class="info-modal__title">Info</h3>
+    <p class="info-modal__message">{{message()}}</p>
+  </form>
+</storefront-modal>

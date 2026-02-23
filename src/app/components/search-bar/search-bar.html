@@ -1,0 +1,15 @@
+<div class="search-bar">
+  <form role="search" class="search-bar__input-container">
+    <storefront-material-icon name="search" class="md search-bar__icon" aria-hidden="true"/>
+    <label for="search-input" class="visually-hidden">
+      Search
+    </label>
+    <input
+      #searchInput
+      id="search-input"
+      type="search"
+      class="search-bar__input"
+      [placeholder]="placeholder()"
+      (input)="search.emit(searchInput.value)"/>
+  </form>
+</div>

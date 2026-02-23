@@ -1,0 +1,36 @@
+<storefront-info-modal message="In order to add to cart, you need to login first." [showModal]="showInfoModal()" />
+<div class="product-details-card">
+  @if(hasProductDetails()) {
+    <storefront-card>
+      <div class="product-details">
+        <div class="product-details__img">
+          <img
+            [src]="productDetails()?.image"
+            [alt]="productDetails()?.title"
+            aria-hidden="true"/>
+        </div>
+        <div class="product-details__content">
+          <div class="product-details__content-header">
+            <h3>{{productDetails()?.title}}</h3>
+            <p>{{productDetails()?.price | currency:'ZAR':'symbol-narrow'}}</p>
+          </div>
+          <storefront-rating [rating]="productDetails()!.rating" class="no-transform"/>
+          <p class="product-details__content-description">{{productDetails()?.description}}</p>
+          <div class="product-details__content-footer">
+            <div class="product-details__content-quantity">
+              <p>Quantity</p>
+              <storefront-number-picker (change)="quantity.set($event)"/>
+            </div>
+            <button class="button primary" (click)="addProductToCart()">Add to cart</button>
+            <button class="button outline primary" (click)="goHome()">Continue shopping</button>
+          </div>
+        </div>
+      </div>
+    </storefront-card>
+  }
+  @if(isLoading$ | async) {
+    <div class="products-details__is-loading">
+      <storefront-loading-spinner />
+    </div>
+  }
+</div>

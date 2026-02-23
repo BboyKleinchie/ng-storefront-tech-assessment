@@ -1,0 +1,16 @@
+.link-list {
+  display: flex;
+  align-items: center;
+  gap: 0rem;
+  @media (min-width: 768px) { gap: 0.6rem; }
+  @media (min-width: 1024px) { gap: 1rem; }
+
+  list-style: none;
+
+  font-size: 1.2rem;
+  text-decoration: none;
+
+  @media (min-width: 768px) { font-size: 1.4rem; }
+  @media (min-width: 1024px) { font-size: 1.6rem; }
+}
+

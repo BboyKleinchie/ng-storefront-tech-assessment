@@ -1,0 +1,20 @@
+// :root { }
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 62.5%; // this is (10px/16px)*100 in order to make 1rem = 10px instead of the default 16px
+}
+
+body {
+  font-family: var(--font-family);
+  font-style: var(--font-style);
+  color: var(--colour-secondary);
+}

@@ -1,0 +1,35 @@
+<storefront-login-modal
+  [showModal]="showLoginModal()"
+  (dismiss)="onLoginModalClose()"
+  (registrationClick)="showLoginModal.set(false); showRegistrationModal.set(true)"/>
+<storefront-registration-modal
+  [showModal]="showRegistrationModal()"
+  (dismiss)="onRegisterModalClose()"
+  (loginClick)="showLoginModal.set(true); showRegistrationModal.set(false)"/>
+<header class="header">
+  <a routerLink="/"><h1 class="header__logo">StoreFront</h1></a>
+  <storefront-link-list label="User Profile links">
+    @if (isLoggedIn()) {
+      <li class="header__link-item header__link-item-separator">
+        <button class="flat-button" (click)="onLogout()">Logout</button>
+      </li>
+    }
+    @if (!isLoggedIn()) {
+      <li class="header__link-item header__link-item-separator">
+        <button class="flat-button" (click)="onLogin()">Login</button>
+      </li>
+    }
+    @if (!isLoggedIn()) {
+      <li class="header__link-item header__link-item-separator">
+        <button class="flat-button" (click)="onRegister()">Register</button>
+      </li>
+    }
+    <li class="header__link-item header__link-item-separator">
+      <button class="flat-button" (click)="onViewCart()">
+        <storefront-material-icon name="shopping_cart" class="md secondary hover"/>
+      </button>
+    </li>
+  </storefront-link-list>
+</header>
+
+<ng-template #toastSuccess>User logged out successfully</ng-template>

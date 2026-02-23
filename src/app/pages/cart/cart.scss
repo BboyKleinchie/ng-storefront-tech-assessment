@@ -1,0 +1,14 @@
+.cart__title {
+  padding: var(--pg-padding-x) var(--pg-padding-y);
+  margin-bottom: 2rem;
+
+  > h2 {
+    font-size: 2.4rem;
+  }
+}
+
+.cart__is-loading {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+}

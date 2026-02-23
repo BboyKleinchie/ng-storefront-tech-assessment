@@ -1,0 +1,8 @@
+<div class="form-field">
+  <ng-content select="input"></ng-content>
+  <ng-content select=".input"></ng-content>
+  <ng-content select="storefront-password-input"></ng-content>
+  @if (hasFieldErrors()) {
+    <div class="error-message">{{ getFieldError() }}</div>
+  }
+</div>

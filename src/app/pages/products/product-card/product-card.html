@@ -1,0 +1,14 @@
+<storefront-vertical-card>
+  <img
+    [src]="product().image"
+    [alt]="product().title"
+    class="product__img"
+    loading="lazy"/>
+
+  <h3 class="product__title">{{product().title}}</h3>
+  <p class="product__price">{{product().price | currency:'ZAR':'symbol-narrow'}}</p>
+  <storefront-rating [rating]="product().rating" />
+  <div class="product__cta">
+    <button class="flat-button primary" (click)="selected.emit(product())">View details</button>
+  </div>
+</storefront-vertical-card>

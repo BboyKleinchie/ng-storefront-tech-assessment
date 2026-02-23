@@ -1,0 +1,54 @@
+@mixin color($classname) {
+  // State colours
+  #{$classname}.success {
+    color: var(--success);
+  }
+  #{$classname}.info {
+    color: var(--info);
+  }
+  #{$classname}.warning {
+    color: var(--warning);
+  }
+  #{$classname}.danger {
+    color: var(--danger);
+  }
+  #{$classname}.disabled {
+    color: var(--disabled);
+  }
+  #{$classname}.default {
+    color: var(--colour-neutral-700);
+  }
+  // Palette colours
+  #{$classname}.primary {
+    color: var(--colour-primary);
+  }
+  #{$classname}.secondary {
+    color: var(--colour-secondary);
+  }
+  #{$classname}.tertiary {
+    color: var(--colour-tertiary);
+  }
+  #{$classname}.quaternary {
+    color: var(--colour-quaternary);
+  }
+  #{$classname}.quinary {
+    color: var(--colour-quinary);
+  }
+
+  // Neutral colours
+  #{$classname}.light {
+    color: var(--colour-neutral-400);
+  }
+  #{$classname}.dark {
+    color: var(--colour-neutral-800);
+  }
+  #{$classname}.white {
+    color: var(--colour-neutral-0);
+  }
+  #{$classname}.black {
+    color: var(--colour-neutral-900);
+  }
+  #{$classname}.transparent {
+    color: transparent;
+  }
+}

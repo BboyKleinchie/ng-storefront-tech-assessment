@@ -1,0 +1,19 @@
+.error-modal {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+
+  color: var(--colour-neutral-700);
+  text-align: center;
+}
+
+.error-modal__banner {
+  height: 10rem;
+  background-color: var(--danger);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.error-modal__title { font-size: 2rem; }
+.error-modal__error { font-size: 1.6rem; }

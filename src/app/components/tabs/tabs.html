@@ -1,0 +1,22 @@
+<nav class="tabs-container">
+  <ul class="tabs" role="tablist">
+    @for(tab of allTabs(); let i = $index; track tab.key) {
+      <li>
+          <button
+            #tabButton
+            type="button"
+            class="tab"
+            role="tab"
+            [class.active]="tab.isSelected"
+            [attr.aria-selected]="tab.isSelected"
+            [attr.tabindex]="tab.isSelected ? 0 : -1"
+            (click)="onTabSelection(tab)"
+            (keydown)="onKeydown($event, i)"
+          >
+            {{ tab.value }}
+          </button>
+      </li>
+    }
+  </ul>
+  <ng-content></ng-content>
+</nav>

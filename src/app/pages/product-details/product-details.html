@@ -1,0 +1,19 @@
+<div class="product-details">
+  @if(this.isLoading$ | async) {
+    <div class="product-details__is-loading">
+      <storefront-loading-spinner class="primary both"/>
+    </div>
+  }
+
+  @if(hasProductDetails() && !(this.isLoading$ | async)) {
+    <storefront-product-details-card [productDetails]="productDetails()"></storefront-product-details-card>
+  }
+
+  @if(!hasProductDetails() && !(isLoading$ | async)) {
+    <storefront-no-products-card
+      title="No Product Found"
+      description="Sorry, we couldn't find any product details for the selected product">
+      <button class="button outline primary" (click)="goHome()">Continue shopping</button>
+    </storefront-no-products-card>
+  }
+</div>

@@ -1,0 +1,22 @@
+<ng-template #modal let-modal>
+  @if (hasTitle()) {
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">{{title()}}</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="dismiss.emit(); modal.dismiss('Cross click')"></button>
+    </div>
+  }
+	<div class="modal-body">
+    <ng-content select="form"></ng-content>
+	</div>
+  @if (hasCallToActions()) {
+    <div class="modal-footer">
+      @if(shouldShowPrimaryAction()) {
+        <button type="button" class="btn btn-outline-primary" (click)="primaryActionClicked.emit(); modal.close()">{{primaryAction()}}</button>
+      }
+      @if (shouldShowDismissAction()) {
+        <button type="button" class="btn btn-outline-secondary" (click)="dismiss.emit(); modal.close(`${secondaryAction()} clicked`)">{{secondaryAction()}}</button>
+      }
+      <ng-content select=".modal-footer-content"></ng-content>
+    </div>
+  }
+</ng-template>

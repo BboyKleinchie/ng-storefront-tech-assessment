@@ -1,0 +1,36 @@
+<storefront-modal
+  title="Login"
+  [showModal]="showModal()"
+  [shouldShowFooter]="true"
+  [shouldShowDismissAction]="false"
+  (dismiss)="onDismiss()"
+  (modalRef)="storeModalReference($event)">
+  <form
+    class="login-modal"
+    [formGroup]="loginForm"
+    (ngSubmit)="onLogin($event)">
+    <storefront-form-field [form]="loginForm" fieldName="username">
+      <input class="storefront-input" placeholder="Username" formControlName="username"/>
+    </storefront-form-field>
+
+    <storefront-form-field [form]="loginForm" fieldName="password">
+      <storefront-password-input (visibilityChange)="isPasswordVisible.set($event)">
+        <input
+          class="storefront-input"
+          placeholder="Password"
+          [type]="`${isPasswordVisible()?'text':'password'}`"
+          formControlName="password" />
+      </storefront-password-input>
+    </storefront-form-field>
+
+    <storefront-loading-button [isLoading]="isLoading$ | async">
+      <button class="button primary" type="submit">Login</button>
+    </storefront-loading-button>
+
+  </form>
+  <div class="modal-footer-content">
+    <p>New to Storefront? <button class="flat-button primary" (click)="onRegister()">Register</button></p>
+  </div>
+</storefront-modal>
+
+<ng-template #toastSuccess>Logged in successfully</ng-template>

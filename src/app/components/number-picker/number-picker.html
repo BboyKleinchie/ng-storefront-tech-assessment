@@ -1,0 +1,9 @@
+<div class="number-picker">
+  <button class="flat-button" (click)="increment()">
+    <storefront-material-icon name="add" class="xs" [useSymbols]="true"></storefront-material-icon>
+  </button>
+  <input [value]="counter()" minlength="1" class="number-picker__input" disabled/>
+  <button class="flat-button" (click)="decrement()">
+    <storefront-material-icon name="remove" class="xs" [useSymbols]="true"></storefront-material-icon>
+  </button>
+</div>

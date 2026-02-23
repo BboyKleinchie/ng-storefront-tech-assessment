@@ -1,0 +1,11 @@
+.vertical-card__img-section {
+  padding: 2rem;
+  border-bottom: var(--default-border);
+}
+
+.vertical-card__content-section {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+}

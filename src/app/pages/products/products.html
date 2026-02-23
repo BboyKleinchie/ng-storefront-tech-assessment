@@ -1,0 +1,33 @@
+<storefront-search-bar placeholder="Search products" (search)="onSearchProducts($event)"/>
+<storefront-tabs
+  [tabs]="categoryTabs()"
+  (selected)="onCategorySelection($event.value)"
+  aria-label="Product categories">
+
+  <section class="products" aria-labelledby="products-heading">
+    <h2 id="products-heading" class="visually-hidden">Product results</h2>
+
+    @if(hasProducts() && !(isLoading$ | async)) {
+      <ul class="products__grid"
+          role="list"
+          aria-live="polite"
+          [aria-busy]="isLoading$ | async">
+        @for (product of allProducts(); track product.id) {
+          <li role="listitem">
+            <storefront-product-card [product]="product" (selected)="viewProductDetails($event)"/>
+          </li>
+        }
+      </ul>
+    }
+
+    @if(!hasProducts() && !(isLoading$ | async)) {
+      <storefront-no-products-card title="No Products Found" description="Sorry, we couldn't find any products matching your search"/>
+    }
+
+    @if(isLoading$ | async) {
+      <div class="products__is-loading">
+        <storefront-loading-spinner />
+      </div>
+    }
+  </section>
+</storefront-tabs>

@@ -1,0 +1,9 @@
+<storefront-modal (dismiss)="dismiss.emit()" [showModal]="hasErrorMessage()" [shouldShowDismissAction]="true">
+  <form class="error-modal">
+    <div class="error-modal__banner">
+      <storefront-material-icon name="highlight_off" class="xxxl white"/>
+    </div>
+    <h3 class="error-modal__title">Oh Snap</h3>
+    <p class="error-modal__error">{{errorMessage()}}</p>
+  </form>
+</storefront-modal>

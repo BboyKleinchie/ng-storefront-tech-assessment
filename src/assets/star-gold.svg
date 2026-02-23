@@ -1,0 +1,11 @@
+<svg
+  width="20"
+  height="20"
+  viewBox="0 0 24 24"
+  fill="#F2B84B"
+  role="img"
+  aria-label="Rating star"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path d="M12 2.25l2.91 5.9 6.51.95-4.71 4.59 1.11 6.48L12 17.77l-5.82 3.06 1.11-6.48-4.71-4.59 6.51-.95L12 2.25z"/>
+</svg>

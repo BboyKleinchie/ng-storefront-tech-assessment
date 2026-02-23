@@ -1,0 +1,19 @@
+.info-modal {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+
+  color: var(--colour-neutral-700);
+  text-align: center;
+}
+
+.info-modal__banner {
+  height: 10rem;
+  background-color: var(--info);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.info-modal__title { font-size: 2rem; }
+.info-modal__message { font-size: 1.6rem; }

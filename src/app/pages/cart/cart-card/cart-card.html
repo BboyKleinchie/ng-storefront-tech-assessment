@@ -1,0 +1,28 @@
+<storefront-info-modal
+  message="This is the end of the demo. Thank you"
+  [showModal]="showInfoModal()"
+  (dismiss)="showInfoModal.set(false)"/>
+<div class="cart-card">
+  <storefront-card>
+    <div class="cart">
+      <div class="cart__img">
+        <img
+          [src]="product()?.image"
+          [alt]="product()?.title"
+          aria-hidden="true"/>
+      </div>
+      <div class="cart__content">
+        <div class="cart__content-header">
+          <h3>{{product()?.title}}</h3>
+          <p>{{product()?.price | currency:'ZAR':'symbol-narrow'}}</p>
+        </div>
+        <storefront-rating [rating]="product()!.rating" class="no-transform"/>
+        <p class="cart__content-description">{{product()?.description}}</p>
+        <div class="cart__content-footer">
+          <button class="button primary" (click)="proceedToCheckout()">Proceed to checkout</button>
+          <button class="button outline primary" (click)="goHome()">Continue shopping</button>
+        </div>
+      </div>
+    </div>
+  </storefront-card>
+</div>

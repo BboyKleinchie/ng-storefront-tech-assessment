@@ -1,0 +1,38 @@
+<footer class="footer">
+  <section aria-labelledby="footer-links" class="footer__links">
+    <h2 id="footer-links" class="visually-hidden">
+      Footer links
+    </h2>
+
+    <storefront-link-list label="Social media">
+      @for(link of [
+        {label: 'Facebook', href: 'https://facebook.com', src: 'facebook.svg'},
+        {label: 'X', href: 'https://x.com', src: 'x.svg'},
+        {label: 'Instagram', href: 'https://instagram.com', src: 'instagram.svg'},
+        ]; let i = $index; track i) {
+        <li>
+          <a
+            [href]="link.href"
+            [aria-label]="`StoreFront on ${link.label}`"
+          >
+            <img [src]="`assets/${link.src}`" alt="" class="footer__social-media-icon"/>
+          </a>
+        </li>
+      }
+    </storefront-link-list>
+
+    <storefront-link-list label="Legal">
+      @for(link of ['Privacy policy','Terms of service','Contact us']; let i = $index; track i) {
+        <li class="footer__link-item footer__link-item-separator"><a>{{link}}</a></li>
+      }
+    </storefront-link-list>
+  </section>
+
+  <section aria-labelledby="footer-copyright" class="footer__copyright">
+    <h2 id="footer-copyright" class="visually-hidden">
+      Copyright
+    </h2>
+
+    <p>&copy; {{ year }} StoreFront. All rights reserved.</p>
+  </section>
+</footer>

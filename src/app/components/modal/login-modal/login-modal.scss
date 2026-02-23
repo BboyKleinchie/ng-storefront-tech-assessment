@@ -1,0 +1,13 @@
+.login-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.modal-footer-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  font-size: 1.4rem;
+}

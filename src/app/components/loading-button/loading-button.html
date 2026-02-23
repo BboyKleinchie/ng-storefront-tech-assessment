@@ -1,0 +1,6 @@
+<div class="loading-button">
+  <ng-content select="button"></ng-content>
+  @if (isLoading()) {
+    <storefront-loading-spinner class="xs white loading-button__loader"/>
+  }
+</div>

@@ -1,0 +1,18 @@
+@if (!(isLoading$ | async) && !hasCartProducts()) {
+  <storefront-empty-cart-card />
+}
+
+@if (isLoading$ | async) {
+  <div class="cart__is-loading">
+    <storefront-loading-spinner class="primary both"/>
+  </div>
+}
+
+@if (hasCartProducts()) {
+  <div class="cart__title">
+    <h2>Shopping cart</h2>
+  </div>
+  @for(product of products(); track product.id) {
+    <storefront-cart-card [product]="product" />
+  }
+}
